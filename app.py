@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, flash, redirect, url_for, esc
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
-app.secret_key = 'MD83Sfsadj892sko!2ls#43Jd_8d3_zaza'
+app.secret_key = 'Foobarj823!42vs#46Jd_d3_Zaylk@'
 Bootstrap(app)
 
 # temp fake database dictionary
@@ -42,6 +42,27 @@ def login():
         else:
             flash('{} not registered'.format(request.form['inputemail']), 'bad')
     return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    if request.method == 'POST':
+        if request.form['inputemail'] not in users:
+            username = request.form['inputemail']
+            name = request.form['inputname']
+            password = request.form['inputpassword']
+            users[username] = {}
+            users[username]['name'] = name
+            users[username]['password'] = password
+            flash('User has been registered')
+            return redirect(url_for('login'))
+
+        if request.form['inputemail'] in users:
+            flash('User already registered', 'bad')
+            return redirect(url_for('login'))
+
+    return render_template('register.html')
 
 @app.route('/logout')
 def logout():
